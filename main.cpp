@@ -1,122 +1,70 @@
 #include<iostream>
 #include<fstream>
-#include<ctime>
-#include<cstdlib>
+#include<vector>
+#include<list>
+#include<set>
+
 using namespace std;
 
+  ifstream  f("date3.in");
+   int n, x,y,viz[100], tata[100];
+   set<int> final;
+   list<int>  la[100];
+    vector<int> d;
+
+void dfs1(int s)
+{
+	viz[s]=1;
+	list<int> ::iterator i;
+	for(i=la[s].begin(); i!=la[s].end(); i++)
+		if(viz[*i]==0)
+		{
+			tata[*i]=s;
+			dfs1(*i);
+		}
+		d.push_back(s);
+}
+
+
+void dfs(int n)
+{
+	for (int i=1; i<=n; i++)
+	{
+		if (viz[i]== 0)
+		{
+			dfs1(i);
+		}
+	}
+
+}
 int main()
 {
-    int n, v[100], s1=0, s2=0, poz=0, poz2=0;
-    char a1[100], a2[100]; //vectorul alegerilor
-	srand(time(NULL));
 
-    ifstream f("date.in");
-    f>>n;
-    for(int i=0; i<n; i++)
-        f>>v[i];
+   f>>n;
+   while(f>>x>>y)
+   {
+       la[x].push_back(y);
+       la[y].push_back(x);
+	}
 
-   int s=0, d=n-1; //extremitatile
-    while (s<d)  //cat timp nu am ajuns la mijloc
-    {
+	dfs(n);
+	for (int i=0; i<d.size(); i++)
+	{
+		if (viz[d[i]] == 1)
+		{
+			final.insert(d[i]);
+			viz[tata[d[i]]] = 0;
+		}
+	}
 
-        if(v[s]==v[d]) //caz1: extremitatile sunt egale
-        {
-            if(v[s+1]<v[d-1])//aleg stanga
-               {
-                s1+= v[s];
-                a1[poz]='S';
-                poz++;
-                s++;
-               }
+	cout << final.size() << endl;
 
-            else
-                if(v[s+1]>= v[d-1])
-            {
-                s1+= v[d];
-                a1[poz]='D';
-                poz++;
-                d--;
-            }
+	set<int>::iterator i;
+	for (i = final.begin(); i != final.end(); i++)
+	{
+		cout << (*i) << " ";
+	}
 
-        }
-
-        else
-            if( v[s]> v[d])
-        {
-                if(v[s+1]> v[s] && v[s+1]>v[d] && v[s+1]>v[d-1] && v[s]>v[d-1])
-                     {
-                s1+= v[d];
-                a1[poz]='D';
-                poz++;
-                d--;
-                    }
-                else
-                     {
-                s1+= v[s];
-                a1[poz]='S';
-                poz++;
-                s++;
-                    }
-
-        }
-
-        else
-        {
-
-            if (v[d - 1]> v[d] && v[d - 1]> v[s] && v[d - 1]> v[s + 1] && v[s + 1]< v[d])
-                {
-                s1+= v[s];
-                a1[poz]='S';
-                poz++;
-                s++;
-                }
-
-            else
-                  {
-                s1+= v[d];
-                a1[poz]='D';
-                poz++;
-                d--;
-                    }
-
-        }
-
-     int t= rand()% 2;
-     if(t==1)
-        {
-        s2+= v[d];
-        a2[poz2]='D';
-        poz2++;
-        d--;
-        }
-
-     else
-       if(t==0)
-          {
-        s2+= v[s];
-        a2[poz2]='S';
-        poz2++;
-        s++;
-        }
-
-    }
-
-
-    if(s1>s2)
-        cout<<"Jucatorul 1 a castigat.";
-    else
-        cout<<"Jucatorul 2 a castigat.";
-
-    cout<<"\n\nSuma obtinuta de primul jucator este: "; cout<<s1;
-    cout<<"\nSuma obtinuta de al doilea jucator este: "; cout<<s2;
-
-    cout<<"\n\nMutarile primului jucator sunt: ";
-    for(int i=0; i<poz; i++)
-        cout<<a1[i];
-
-
-    cout<<"\n\nMutarile primului jucator sunt: ";
-    for(int i=0; i<poz2; i++)
-        cout<<a2[i];
-    return 0;
+	cout << endl;
+   return 0;
 }
